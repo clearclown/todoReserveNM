@@ -1,0 +1,46 @@
+# version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: todo_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../../:/app
+      - backend-node-modules:/app/node_modules
+    ports:
+      - "3000:3000"
+      - "9229:9229" # Node.js debugging port
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/todo_dev
+      - PORT=3000
+      - APP_PORT=3000
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=todo_dev
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "cd /app && pnpm install && pnpm nx serve backend"
+
+volumes:
+  postgres-data:
+  backend-node-modules:

@@ -1,0 +1,29 @@
+# ベースイメージとして Node.js LTS (slim版) を使用
+FROM node:lts-slim
+
+# 作業ディレクトリを設定
+WORKDIR /monorepo
+
+# 必要なツールをインストール
+# - curl: ネットワークリクエスト用
+# - git: バージョン管理
+# - nano: テキストエディタ
+# - tree: ディレクトリ構造表示
+# キャッシュを削除してイメージサイズを削減
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    nano \
+    tree \
+    && rm -rf /var/lib/apt/lists/*
+
+# プロジェクトファイルをコンテナにコピー
+COPY . .
+
+# pnpmパッケージマネージャーを有効化
+# corepack: Node.js標準のパッケージマネージャーツール
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# コンテナ起動時にbashシェルを実行
+# 開発環境でコンテナ内でコマンドを実行できるようにする
+CMD ["bash"]

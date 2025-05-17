@@ -1,0 +1,23 @@
+No.,対象エンドポイント,エンドポイント名,テストメソッド名,HTTP Request Method,正常 / 異常,HTTP Status Code,確認する品質,期待する効果,テストコード有り(Y/N),通過(Y/N)
+1,/auth/register,register_user,test_register_user_success,POST,正常,201,新規ユーザー登録,"・新規ユーザーがデータベースに追加されている
+・レスポンスにトークンが含まれている",N,N
+2,/auth/login,login_user,test_login_user_success,POST,正常,200,ログイン処理,"・正しい認証情報でトークンを受け取れる
+・レスポンスにユーザー情報が含まれている",N,N
+3,/auth/login,login_user,test_login_user_failure,POST,異常,401,ログイン失敗時の処理,"・誤ったパスワードで401が返される
+・エラーメッセージが返る",N,N
+4,/auth/logout,logout_user,test_logout_user_success,POST,正常,200,ログアウト処理,,N,N
+5,/auth/logout,logout_user,test_logout_user_failure,POST,異常,401,ログアウト失敗時の処理,,N,N
+6,/todos,get_todos,test_get_todos,GET,正常,200,ToDo一覧取得,"・自身のToDoのみが返る
+・データ構造が正しい",N,N
+7,/todos,create_todo,test_create_todo_success,POST,正常,201,ToDo作成,"・ToDoがデータベースに登録されている
+・返却内容に作成済みToDoが含まれる",N,N
+8,/todos,create_todo,test_create_todo_no_title,POST,異常,400,バリデーション（タイトル必須）,"・タイトルなしでバリデーションエラーが返る
+・DBに保存されない",N,N
+9,/todos/{id},update_todo,test_update_todo_success,PUT,正常,200,ToDo編集,"・内容が更新されて返る
+・DBにも反映される",N,N
+10,/todos/{id},delete_todo,test_delete_todo_success,DELETE,正常,204,ToDo削除,"・対象ToDoが削除される
+・再取得時に存在しない",N,N
+11,/todos/{id}/complete,toggle_todo_complete,test_toggle_todo_complete,PATCH,正常,200,ToDo完了切替,"・完了ステータスが更新される
+・画面上にも反映される",N,N
+12,/todos/{id},get_todo,test_forbidden_access_to_other_user,GET,異常,403,認可制御（他人のToDoアクセス遮断）,"・403が返る
+・他人のデータが取得できない",N,N

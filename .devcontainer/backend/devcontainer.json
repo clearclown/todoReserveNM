@@ -1,0 +1,50 @@
+{
+  "name": "Backend Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "backend-dev",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "ms-azuretools.vscode-docker",
+        "christian-kohler.path-intellisense",
+        "Prisma.prisma",
+        "vivaxy.vscode-conventional-commits",
+        "firsttris.vscode-jest-runner",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "humao.rest-client"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "sqltools.connections": [
+          {
+            "name": "Development DB",
+            "driver": "PostgreSQL",
+            "server": "db",
+            "port": 5432,
+            "database": "${env:POSTGRES_DB}",
+            "username": "${env:POSTGRES_USER}",
+            "password": "${env:POSTGRES_PASSWORD}"
+          }
+        ]
+      }
+    }
+  },
+  "forwardPorts": [3000, 5432],
+  "postCreateCommand": "corepack enable && pnpm install",
+  "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  }
+}
