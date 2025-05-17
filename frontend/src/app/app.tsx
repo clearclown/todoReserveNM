@@ -1,9 +1,9 @@
-import NxWelcome from './nx-welcome';
+import { TodoList } from '../components/TodoList';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="frontend" />
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-950 py-8">
+      <TodoList />
     </div>
   );
 }

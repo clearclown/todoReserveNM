@@ -1,4 +1,4 @@
-# ベースイメージとして Node.js LTS (slim版) を使用
+# 開発環境用のDockerfile
 FROM node:lts-slim
 
 # 作業ディレクトリを設定
@@ -9,20 +9,40 @@ WORKDIR /monorepo
 # - git: バージョン管理
 # - nano: テキストエディタ
 # - tree: ディレクトリ構造表示
+# - sudo: 権限昇格用
+# - procps: プロセス管理ツール（ps、topなど）
+# - iputils-ping: ネットワーク診断ツール
+# - postgresql-client: PostgreSQLクライアント
 # キャッシュを削除してイメージサイズを削減
 RUN apt-get update && apt-get install -y \
     curl \
     git \
     nano \
     tree \
+    sudo \
+    procps \
+    iputils-ping \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# プロジェクトファイルをコンテナにコピー
-COPY . .
+# ノンルートユーザーとしての sudo 権限を追加
+RUN echo "node ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/node \
+    && chmod 0440 /etc/sudoers.d/node
 
 # pnpmパッケージマネージャーを有効化
 # corepack: Node.js標準のパッケージマネージャーツール
 RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# NxをグローバルインストールしてCLIを使えるようにする
+RUN npm install -g nx@latest
+
+# Gitの設定
+RUN git config --global init.defaultBranch main
+
+# プロジェクトファイルをコンテナにコピー
+COPY package.json pnpm-lock.yaml* ./
+# 依存関係のインストール（開発用）
+RUN pnpm install
 
 # コンテナ起動時にbashシェルを実行
 # 開発環境でコンテナ内でコマンドを実行できるようにする

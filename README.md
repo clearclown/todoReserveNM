@@ -1,90 +1,78 @@
-# todoReserve
+# ToDo App
 
-## 使用技術
+This is a full-stack Todo application built with:
 
-### コア技術
-- [Nx](https://nx.dev): ^21.0.3
-- TypeScript
-- Node.js: ^22.15.0
-- npx: ^11.3.0
-- pnpm: ^10.10.0
-- Docker, Docker compose
-- **AIモデル: claude-3-7-sonnet-20250219 (Anthropic Messages API 2023-06-01) ← バージョン変更禁止**
+- Frontend: React, Vite, Tailwind CSS
+- Backend: NestJS
+- Database: PostgreSQL
 
-### フロントエンド
-- pnpm
-- Vite
-- TypeScript
-- React.js
-- shadcn/ui
-- TailwindCSS
-- Tanstack Router
-- Tanstack Form
-- Tanstack Query
-- Orval
-- Jotai
+## Running with Docker
 
-### バックエンド
-- pnpm
-- nest.js
-- TypeScript
-- Express.js
+To run the application with Docker, follow these steps:
 
-### Database
-- Redis
-- PostGreSQL
+1. Make sure Docker and Docker Compose are installed on your system
 
-### 開発ツール
-- Docker
-- Github Action
-- Git, GitHub
-
-### テスト
-- 単体 : [vitest](https://vitest.dev) : ^3.1.3
-- 結合 : playwrite
-
-## 基本コマンド
-1. Docker compose
+2. Clone the repository:
 
 ```bash
-docker compose up --build -d
+git clone <repository-url>
+cd todoapp
 ```
 
-2. ファイル構造表示
+3. Start the application:
 
 ```bash
-tree -a -I 'node_modules|.git|.nx|.pnpm-store|.vscode|docs|.cursor'
+docker compose up -d
 ```
 
-### 🐳 Docker での開発・本番
+4. Access the application:
 
-#### 1. `.env` を作る
-`.env.example` をコピーして編集。
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3000
 
-```bash
-cp .env.example .env
-````
-
-
-#### 2. イメージをビルド＆起動
+5. Stop the application:
 
 ```bash
-docker compose up -d --build
+docker compose down
 ```
 
-| コンテナ     | 開放ポート       | 用途         |
-| -------- | ----------- | ---------- |
-| db       | 5432        | PostgreSQL |
-| backend  | \$APP\_PORT | NestJS API |
-| frontend | 5173        | 静的 SPA     |
+## Development
 
-#### 3. 停止・削除
+### Frontend
 
 ```bash
-docker compose down -v   # ボリュームも削除
+cd frontend
+npm install
+npm run dev
 ```
 
+### Backend
+
 ```bash
-docker system prune -a --volumes --force
+cd backend
+npm install
+npm run start:dev
 ```
-# todoReserveNM
+
+## Testing
+
+### Frontend Tests
+
+```bash
+cd frontend
+npm test
+```
+
+### Backend Tests
+
+```bash
+cd backend
+npm test
+```
+
+## Features
+
+- User authentication (register, login, logout)
+- Todo management (create, read, update, delete)
+- Mark todos as complete/incomplete
+- Responsive design with Tailwind CSS

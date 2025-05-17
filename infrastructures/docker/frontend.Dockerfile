@@ -1,30 +1,34 @@
-# ──────── build stage ───────────────────────
-FROM node:lts-slim AS builder
-WORKDIR /monorepo
+# Build stage
+FROM node:lts-slim AS build
 
-# 依存をキャッシュ（eslint 設定もコピー）
-COPY pnpm-lock.yaml package.json nx.json tsconfig.base.json eslint.config.mjs ./
-RUN corepack enable && corepack prepare pnpm@latest --activate \
-  && pnpm install --frozen-lockfile
+WORKDIR /app
 
-# ソースをコピーして Nx ビルド
-COPY frontend ./frontend
+# Copy package.json and install dependencies
+COPY package.json pnpm-lock.yaml* ./
+COPY frontend/package.json ./frontend/
+RUN npm install -g pnpm
+RUN pnpm install
 
-# デバッグ: frontend ディレクトリの内容を確認
-RUN ls -al ./frontend
+# Install TypeScript and Vite globally
+RUN npm install -g typescript
+RUN npm install -g vite
 
-# Nx ビルド
-RUN pnpm nx build frontend && \
-    echo "ビルド後のdist/frontendの内容:" && ls -al ./dist/frontend
+# Copy the rest of the application code
+COPY . .
 
-# ─────── runtime stage (nginx) ─────────────
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
+# Build the frontend app
+WORKDIR /app/frontend
+RUN npx tsc && npx vite build
 
-# Nx 出力先をそのままコピー
-COPY --from=builder /monorepo/dist/frontend ./
+# Production stage with Nginx
+FROM nginx:latest
 
-# デバッグ: コピー後のnginx/htmlディレクトリの内容を確認
-RUN ls -al /usr/share/nginx/html
+# Copy built assets from the build stage
+COPY --from=build /app/dist/frontend /usr/share/nginx/html
+
+# Copy nginx config
+COPY infrastructures/docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

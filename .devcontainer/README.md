@@ -1,128 +1,63 @@
-# Development Containers for Todo App
+# VS Code Dev Container の使い方
 
-This directory contains development container configurations for frontend, backend, and full-stack developers, allowing for a consistent, isolated development environment.
+このプロジェクトは VS Code の Dev Container 機能を使用して開発環境を統一しています。
 
-## Available Configurations
+## 前提条件
 
-### Frontend Development
-Located in `.devcontainer/frontend/`
-- React/Next.js development environment
-- Tailwind CSS support
-- Node.js LTS with pnpm
-- All required VS Code extensions
+以下のソフトウェアがインストールされている必要があります：
 
-### Backend Development
-Located in `.devcontainer/backend/`
-- NestJS development environment
-- PostgreSQL database
-- Node.js LTS with pnpm
-- Database client tools
-- All required VS Code extensions
+1. [Visual Studio Code](https://code.visualstudio.com/)
+2. [Docker Desktop](https://www.docker.com/products/docker-desktop)
+3. [Remote - Containers 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-### Full-Stack Development
-Located in `.devcontainer/fullstack/`
-- Complete development environment for both frontend and backend
-- Combined set of extensions and tools for full-stack development
-- PostgreSQL database
-- Node.js LTS with pnpm
+## 使用方法
 
-## Usage
+1. このリポジトリをクローンします。
+2. VS Code でプロジェクトを開きます。
+3. VS Code の左下の緑色のアイコンをクリックします。
+4. 表示されるメニューから「Reopen in Container」を選択します。
+5. コンテナのビルドが完了するまで待ちます（初回は数分かかることがあります）。
 
-### Prerequisites
-- [Docker](https://www.docker.com/products/docker-desktop)
-- [VS Code](https://code.visualstudio.com/)
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+## コンテナ内の機能
 
-### Getting Started
+- Node.js LTS
+- pnpm パッケージマネージャー
+- Git
+- PostgreSQL クライアント
+- その他開発に必要なツール
 
-1. Clone the repository
-2. Copy `.env.example` to `.env` in the root directory (if not already created)
-3. Open the project in VS Code
-4. Choose your development focus:
-   - For frontend developers: `Ctrl+Shift+P` → "Dev Containers: Open Folder in Container..." → select the project root → choose `.devcontainer/frontend`
-   - For backend developers: `Ctrl+Shift+P` → "Dev Containers: Open Folder in Container..." → select the project root → choose `.devcontainer/backend`
-   - For full-stack developers: `Ctrl+Shift+P` → "Dev Containers: Open Folder in Container..." → select the project root → choose `.devcontainer/fullstack`
+## ポート
 
-5. Wait for the container to build and initialize
+以下のポートがホストマシンにフォワードされます：
 
-## Environment Variables
+- 3000: バックエンドAPI (NestJS)
+- 5173: フロントエンド開発サーバー (Vite)
+- 5432: PostgreSQL データベース
 
-The development containers use the following default environment variables:
+## トラブルシューティング
 
-### Backend/Full-Stack
-```
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=todo_dev
-APP_PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgresql://postgres:postgres@db:5432/todo_dev
+### コンテナが起動しない場合
+
+1. Docker Desktopが起動していることを確認してください。
+2. VS Code を再起動してみてください。
+3. `Remote-Containers: Rebuild Container` コマンドを実行してみてください。
+
+### パッケージの更新
+
+新しいパッケージをインストールした後や、`package.json` が変更された場合：
+
+```bash
+pnpm install
 ```
 
-### Frontend
-```
-VITE_API_URL=http://localhost:3000
-NODE_ENV=development
-```
+を実行してください。
 
-You can customize these by creating a `.env` file in the project root.
+### データベース接続
 
-## Extensions Included
+PostgreSQL データベースに接続するには以下の設定を使用します：
 
-### Frontend
-- ESLint
-- Prettier
-- Tailwind CSS IntelliSense
-- TypeScript support
-- React tools
-- Docker tools
-
-### Backend
-- ESLint
-- Prettier
-- TypeScript support
-- Prisma
-- PostgreSQL tools
-- REST Client
-- Docker tools
-
-### Full-Stack
-- All frontend and backend extensions
-- GitLens
-- Nx Console
-- EditorConfig
-
-## Debugging
-
-- Frontend debugging is available through the browser's developer tools.
-- Backend debugging is configured with the VS Code Node.js debugger.
-- Both backend and full-stack containers expose port 9229 for remote debugging.
-
-## Running Services
-
-### Frontend Container
-Frontend service automatically starts with:
-```
-pnpm nx serve frontend
-```
-
-### Backend Container
-Backend service automatically starts with:
-```
-pnpm nx serve backend
-```
-
-### Full-Stack Container
-In the full-stack container, you need to manually start services as needed:
-
-For backend:
-```
-pnpm nx serve backend
-```
-
-For frontend:
-```
-pnpm nx serve frontend
-```
-
-This allows you to work on either service independently or run both simultaneously.
+- ホスト: `db`（コンテナ内から接続する場合）または `localhost`（ホストマシンから接続する場合）
+- ポート: 5432
+- ユーザー名: postgres
+- パスワード: postgres
+- データベース名: todoreserve

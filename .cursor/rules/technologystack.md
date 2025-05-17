@@ -25,6 +25,7 @@
 ## バックエンド
 - pnpm
 - nest.js
+- zenstack
 - TypeScript
 - Express.js
 
